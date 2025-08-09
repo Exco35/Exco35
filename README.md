@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @Exco35
 - 👀 I’m interested in Gundam
-- 🌱 I’m currently learning Python and C+
+- 🌱 I’m currently learning Python and C+/C#
 - 💞️ I’m looking to collaborate on ...
 - 📫 How to reach me ...
 
