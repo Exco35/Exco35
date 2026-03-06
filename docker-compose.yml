@@ -1,0 +1,47 @@
+services:
+  game-scraper:
+    build: .
+    image: game-scraper:latest
+
+    # Persistent config, wishlist, purchase history, and keyring file
+    volumes:
+      - game-scraper-data:/data
+      # Mount a host directory for downloaded games, e.g.:
+      #   - /mnt/games:/downloads
+      - ./downloads:/downloads
+
+    environment:
+      # --- Keyring (headless file backend) ---
+      PYTHON_KEYRING_BACKEND: keyrings.alt.file.PlaintextKeyring
+
+      # --- Download location (must match the volume mount above) ---
+      GAME_SCRAPER_DOWNLOAD_DIR: /downloads
+
+      # --- GOG credentials (optional — alternative to running 'gog login') ---
+      # Uncomment and fill in after running: docker compose run game-scraper gog login
+      # GOG_ACCESS_TOKEN: ""
+      # GOG_REFRESH_TOKEN: ""
+
+    # Default: show help. Override at run time:
+    #   docker compose run game-scraper deals --min-discount 75
+    #   docker compose run game-scraper watch --auto-buy
+    command: ["--help"]
+
+  # Continuous watch / daemon mode
+  watcher:
+    build: .
+    image: game-scraper:latest
+    profiles: ["watch"]           # only started with: docker compose --profile watch up
+    volumes:
+      - game-scraper-data:/data
+      - ./downloads:/downloads
+    environment:
+      PYTHON_KEYRING_BACKEND: keyrings.alt.file.PlaintextKeyring
+      GAME_SCRAPER_DOWNLOAD_DIR: /downloads
+      # GOG_ACCESS_TOKEN: ""
+      # GOG_REFRESH_TOKEN: ""
+    restart: unless-stopped
+    command: ["watch", "--interval", "60"]
+
+volumes:
+  game-scraper-data:

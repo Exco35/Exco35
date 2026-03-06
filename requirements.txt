@@ -4,6 +4,7 @@ lxml>=4.9.0
 click>=8.1.0
 rich>=13.0.0
 keyring>=24.0.0
+keyrings.alt>=4.2.0
 platformdirs>=3.0.0
 tqdm>=4.65.0
 schedule>=1.2.0

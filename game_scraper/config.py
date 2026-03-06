@@ -17,7 +17,8 @@ HISTORY_FILE = DATA_DIR / "purchase_history.json"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
 DEFAULT_CONFIG = {
-    "download_dir": str(Path.home() / "Games"),
+    # GAME_SCRAPER_DOWNLOAD_DIR env var lets Docker users override via compose
+    "download_dir": os.environ.get("GAME_SCRAPER_DOWNLOAD_DIR", str(Path.home() / "Games")),
     "auto_purchase": False,
     "max_price_usd": 0.0,
     "notify_on_deal": True,

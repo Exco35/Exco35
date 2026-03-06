@@ -11,6 +11,7 @@ wishlist AND are within the configured price/discount thresholds.  Auto-purchase
 must be explicitly enabled by the user in config.
 """
 
+import os
 import time
 import webbrowser
 from datetime import datetime, timezone
@@ -93,8 +94,15 @@ class GOGPurchaser:
         keyring.set_password(SERVICE_NAME, "token_expiry", str(self._token_expiry))
 
     def _load_tokens(self):
-        self._access_token = keyring.get_password(SERVICE_NAME, "access_token")
-        self._refresh_token = keyring.get_password(SERVICE_NAME, "refresh_token")
+        # Environment variables take precedence — useful in Docker / CI.
+        self._access_token = (
+            os.environ.get("GOG_ACCESS_TOKEN")
+            or keyring.get_password(SERVICE_NAME, "access_token")
+        )
+        self._refresh_token = (
+            os.environ.get("GOG_REFRESH_TOKEN")
+            or keyring.get_password(SERVICE_NAME, "refresh_token")
+        )
         expiry_str = keyring.get_password(SERVICE_NAME, "token_expiry") or "0"
         self._token_expiry = float(expiry_str)
 
